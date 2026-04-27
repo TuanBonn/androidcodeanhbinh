@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnNext: Button
     private lateinit var tvImageInfo: TextView
 
-    // Danh sách ảnh từ thư mục drawable
     private val images = listOf(R.drawable.pic1, R.drawable.pic2, R.drawable.pic3)
     private var currentIndex = 0
 
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Ánh xạ View
         imgDisplay = findViewById(R.id.imgDisplay)
         btnPrevious = findViewById(R.id.btnPrevious)
         btnNext = findViewById(R.id.btnNext)
@@ -44,8 +42,5 @@ class MainActivity : AppCompatActivity() {
         imgDisplay.setImageResource(images[currentIndex])
         tvImageInfo.text = "Hình ảnh ${currentIndex + 1} / ${images.size}"
 
-        // Disable nút nếu ở đầu/cuối danh sách (tùy chọn)
-        // btnPrevious.isEnabled = currentIndex > 0
-        // btnNext.isEnabled = currentIndex < images.size - 1
     }
 }

@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         // VALIDATION
         if (name.isEmpty() || dob.isEmpty() || email.isEmpty()) {
-            // SỬA LỖI: Dùng string resource
+
             Toast.makeText(this, getString(R.string.error_empty_fields), Toast.LENGTH_SHORT).show()
             return
         }

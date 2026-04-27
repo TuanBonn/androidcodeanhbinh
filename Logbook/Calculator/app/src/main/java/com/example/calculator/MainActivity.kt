@@ -15,14 +15,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSubtract: Button
     private lateinit var btnMultiply: Button
     private lateinit var btnDivide: Button
-    private lateinit var btnClear: Button // Thêm mới
+    private lateinit var btnClear: Button
     private lateinit var tvResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Khởi tạo các View
         edtNumber1 = findViewById(R.id.edtNumber1)
         edtNumber2 = findViewById(R.id.edtNumber2)
         tvResult = findViewById(R.id.tvResult)
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Xử lý nút Clear
         btnClear.setOnClickListener {
             edtNumber1.text.clear()
             edtNumber2.text.clear()
@@ -61,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Hàm rút gọn logic tính toán
     private fun performCalculation(operation: (Double, Double) -> Double) {
         if (validateInput()) {
             val num1 = edtNumber1.text.toString().toDouble()

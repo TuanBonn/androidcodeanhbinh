@@ -14,7 +14,6 @@ class ContactAdapter(private val contactList: ArrayList<Contact>) :
 
 
     inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Ánh xạ các TextView VÀ ImageView
         val tvName: TextView = itemView.findViewById(R.id.tvName)
         val tvDoB: TextView = itemView.findViewById(R.id.tvDoB)
         val tvEmail: TextView = itemView.findViewById(R.id.tvEmail)

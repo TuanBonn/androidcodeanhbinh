@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ? TextField(
           controller: _searchController,
           autofocus: true,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white, fontSize: 18),
           decoration: const InputDecoration(
             hintText: 'Search hike...',
             hintStyle: TextStyle(color: Colors.white70),
@@ -53,9 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           onChanged: (value) => _refreshHikeList(value),
         )
-            : const Text('M-Hike Hybrid'),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
+            : const Text('M-Hike Explore', style: TextStyle(fontWeight: FontWeight.w600)),
         actions: [
           IconButton(
             icon: Icon(_isSearching ? Icons.close : Icons.search),
@@ -71,7 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           if (!_isSearching)
             IconButton(
-              icon: const Icon(Icons.delete_sweep),
+              icon: const Icon(Icons.delete_sweep_rounded),
+              tooltip: 'Delete All',
               onPressed: () async {
                 await DatabaseHelper().deleteAllHikes();
                 _refreshHikeList();
@@ -83,14 +82,30 @@ class _HomeScreenState extends State<HomeScreen> {
         future: _hikeListFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: Colors.teal));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.hiking, size: 80, color: Colors.grey),
-                  Text('No hikes found.', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.teal.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.landscape_rounded, size: 80, color: Colors.teal),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'No hikes found.',
+                    style: TextStyle(fontSize: 20, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Tap + to add a new adventure!',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
                 ],
               ),
             );
@@ -98,71 +113,124 @@ class _HomeScreenState extends State<HomeScreen> {
 
           final hikes = snapshot.data!;
           return ListView.builder(
+            padding: const EdgeInsets.only(top: 12, bottom: 80),
             itemCount: hikes.length,
             itemBuilder: (context, index) {
               final hike = hikes[index];
               return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                elevation: 3,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(10),
-                  title: Text(hike.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 4),
-                      Row(children: [const Icon(Icons.date_range, size: 14), const SizedBox(width: 4), Text(hike.date)]),
-                      Row(children: [const Icon(Icons.location_on, size: 14), const SizedBox(width: 4), Text(hike.location)]),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AddHikeScreen(hike: hike)),
-                          );
-                          if (result == true) _refreshHikeList(_searchController.text);
-                        },
-                      ),
-
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Confirm Delete'),
-                              content: Text('Delete "${hike.name}"?'),
-                              actions: [
-                                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-                                TextButton(onPressed: () { _deleteHike(hike.id!); Navigator.pop(ctx); }, child: const Text('Delete', style: TextStyle(color: Colors.red))),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                elevation: 2,
+                shadowColor: Colors.teal.withOpacity(0.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => HikeDetailScreen(hike: hike)),
                     );
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.teal.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.terrain_rounded, color: Colors.teal, size: 32),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                hike.name,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      hike.location,
+                                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(Icons.calendar_today_rounded, size: 14, color: Colors.grey),
+                                  const SizedBox(width: 4),
+                                  Text(hike.date, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Column(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit_rounded, color: Colors.teal),
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => AddHikeScreen(hike: hike)),
+                                );
+                                if (result == true) _refreshHikeList(_searchController.text);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    title: const Text('Confirm Delete'),
+                                    content: Text('Are you sure you want to delete "${hike.name}"?'),
+                                    actions: [
+                                      TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
+                                        onPressed: () {
+                                          _deleteHike(hike.id!);
+                                          Navigator.pop(ctx);
+                                        },
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.push(
             context,
@@ -170,8 +238,9 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           if (result == true) _refreshHikeList();
         },
-        backgroundColor: Colors.indigo,
-        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.teal,
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text('New Hike', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }

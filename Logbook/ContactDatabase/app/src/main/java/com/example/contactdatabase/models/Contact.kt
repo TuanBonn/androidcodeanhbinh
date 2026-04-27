@@ -1,6 +1,6 @@
 package com.example.contactdatabase.models
 
-data class Contact(
+data class  Contact(
     val id: Long,
     val name: String,
     val dob: String,
