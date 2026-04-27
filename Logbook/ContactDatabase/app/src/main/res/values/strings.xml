@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ContactDatabase</string>
+
+    <string name="error_empty_fields">Please fill in all fields</string>
+    <string name="error_add_failed">Failed to add contact</string>
+    <string name="success_contact_added">Contact added successfully with ID: %1$d</string>
+
+    <string name="avatar_1">Avatar 1</string>
+    <string name="avatar_2">Avatar 2</string>
+    <string name="avatar_3">Avatar 3</string>
+    <string name="choose_avatar">Choose Avatar:</string>
+</resources>

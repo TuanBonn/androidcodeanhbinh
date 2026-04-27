@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Image Viewer</string>
+    <string name="btn_previous_text">Previous</string>
+    <string name="btn_next_text">Next</string>
+</resources>
